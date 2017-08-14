@@ -10,7 +10,8 @@ tariff = Model::Tariff.new(
   min_fare: 299_00
 )
 dummy_router = proc do |origin, destination|
-  Model::Route.new([origin, destination], distance: 20, duration: 39)
+  # Distance and duration from Avtozavodskaya to Dmitrovskaya accorging to Google
+  Model::Route.new([origin, destination], distance: 19934, duration: 1511)
 end
 api = Api.new([tariff], dummy_router)
 
