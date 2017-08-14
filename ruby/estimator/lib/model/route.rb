@@ -8,8 +8,8 @@ module Model
       @duration = duration.to_i # in seconds
     end
 
-    def to_json
-      { map_points: map_points, distance: distance, duration: duration}.to_json
+    def to_h
+      { map_points: map_points, distance: distance, duration: duration }
     end
   end
 end
