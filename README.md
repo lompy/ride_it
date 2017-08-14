@@ -1,5 +1,4 @@
 ## Ride it, man.
-
 JSON API for ride fare estimation.
 
 ### Estimator.
@@ -11,9 +10,10 @@ Estimator is written as a Sinatra app as Sinatra is a
 simple and fast ruby micro-framework. Users are faced with
 a JSON API which is easy to parse and comprehend.
 
-To run the app use simple commands:
+To run the app use following commands:
 ```
 cd ruby/estimator
+bundle install
 ruby application.rb
 ```
 
