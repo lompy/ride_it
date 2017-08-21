@@ -3,7 +3,7 @@ require 'test_helper'
 class APITest < Minitest::Test
   class DummyRouter
     def call(origin, destination)
-      Model::Route.new([origin, destination], distance: 20, duration: 40)
+      [Router::Route.new(map_points: [origin, destination], distance: 20, duration: 40)]
     end
   end
 

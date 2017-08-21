@@ -13,7 +13,6 @@ class API
     origin, destination = Router::API.parse_params(params)
     routes = @router.call(origin, destination)
     tariff = @tariffs.fetch(params['tariff'] || 'business')
-    fare = Model::CalculateFare.call(tariff, route)
     {
       routes: routes.map do |r|
         r.to_h.merge(fare: Model.format_money(Model::CalculateFare.call(tariff, r)))
