@@ -14,7 +14,7 @@ To run the app use following commands:
 ```
 cd ruby/estimator
 bundle install
-ruby application.rb
+bundle exec ruby application.rb
 ```
 
 API usage example:
@@ -32,7 +32,7 @@ API usage example:
 }
 
 
-// GET http://localhost:4567/estimate?origin=55.709876,37.653323&destination=55.804302,37.5835381
+// GET http://localhost:4568/estimate?origin=55.709876,37.653323&destination=55.804302,37.5835381
 {
   "routes":[{
     "map_points":[{
@@ -49,11 +49,61 @@ API usage example:
 }
 ```
 
-### Router.
+### Router gem.
 Router estimates distance and duration betweed origin and destination.
 Router is an adapter for third party routing geo-services.
 
+You can use router as a gem in your ruby application and build adapters for desired
+services. But also Router gem can be run as a sinatra application providing adapter
+for itself.
+
+To run router as a sinatra application run.
+
+```
+cd ruby/router
+bundle install
+bundle exec ruby application.rb
+```
+
+API usage example:
+
+```
+// GET http://localhost:4567/estimate?origin=55.709876,37.653323&destination=55.804302,37.5835381
+{
+  "routes":[{
+    "map_points":[{
+      "lat":55.709876,"long":37.653323
+    },{
+      "lat":55.804302,"long":37.583538
+    }],
+    "distance":19934,
+    "duration":1511
+  }]
+}
+```
+
+Estimator uses Router's SelfAdapter to get routing from Router's
+sinatra application via HTTP:
+
+```
+router = Router.build(adapter: :Self, cache: true)
+router.call(
+  Router::MapPoint.new(lat: 55.709876, long: 37.653323)
+  Router::MapPoint.new(lat: 55.804302, long: 37.583538)
+) # => [<#Router::Route @map_points=[...] @distance=19934 @duration=1511>]
+```
+
+But it can easily skip HTTP step and use other adapters directly skipping
+Router as a microservice:
+
+```
+router = Router.build(adapter: :OSM, cache: true)
+```
+
+At the moment Router supports only OSM backend and uses it by default.
+
 ### OSM backend.
+In order to use OSM adapter you need to run osrm service with some actual geodata.
 
 ```
 mkdir osrm && cd osrm
@@ -65,11 +115,9 @@ docker run -t -i -p 5000:5000 -v $(pwd):/data osrm/osrm-backend osrm-routed /dat
 ```
 
 ### TODO.
+- TESTS
 - Tariff repository.
-- OSM backend.
-- Router adapters for OSM.
-- Router caching.
+- Cache hashing algorithm.
 - Command line options.
 - Edge cases and error handling.
-- Make geo-services adapters as a gem.
 - Golang version of apps and speed comparison.
