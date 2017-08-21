@@ -53,9 +53,21 @@ API usage example:
 Router estimates distance and duration betweed origin and destination.
 Router is an adapter for third party routing geo-services.
 
+### OSM backend.
+
+```
+mkdir osrm && cd osrm
+wget http://download.geofabrik.de/russia/central-fed-district-latest.osm.pbf
+docker pull osrm/osrm-backend
+docker run -t -v $(pwd):/data osrm/osrm-backend osrm-extract -p /opt/car.lua /data/central-fed-district-latest.osm.pbf
+docker run -t -v $(pwd):/data osrm/osrm-backend osrm-contract /data/central-fed-district-latest.osrm
+docker run -t -i -p 5000:5000 -v $(pwd):/data osrm/osrm-backend osrm-routed /data/central-fed-district-latest.osrm
+```
+
 ### TODO.
 - Tariff repository.
-- Router adapters for OSM and Google distance API.
+- OSM backend.
+- Router adapters for OSM.
 - Router caching.
 - Command line options.
 - Edge cases and error handling.

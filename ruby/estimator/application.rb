@@ -1,6 +1,6 @@
 require 'sinatra'
-require './lib/model'
 require './lib/api'
+require 'router'
 
 tariff = Model::Tariff.new(
   :business,
@@ -9,11 +9,11 @@ tariff = Model::Tariff.new(
   per_km: 38_00,
   min_fare: 299_00
 )
-dummy_router = proc do |origin, destination|
-  # Distance and duration from Avtozavodskaya to Dmitrovskaya accorging to Google
-  Model::Route.new([origin, destination], distance: 19934, duration: 1511)
-end
-api = Api.new([tariff], dummy_router)
+
+router = Router.build(adapter: :Self, cache: true)
+api = API.new([tariff], router)
+
+set :port, 4568
 
 get '/estimate' do
   content_type :json

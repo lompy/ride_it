@@ -5,6 +5,7 @@ gem 'rake'
 gem 'sinatra'
 gem 'money'
 gem 'pry'
+gem 'router', path: '../router'
 
 group :test do
   gem 'minitest'

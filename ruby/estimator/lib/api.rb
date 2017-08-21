@@ -1,28 +1,23 @@
 require_relative './model'
+require 'router'
 
-# Api encapsulates all endpoints so that later
+# API encapsulates all endpoints so that later
 # we can switch to another routing layer
-class Api
+class API
   def initialize(tariffs, router)
     @tariffs = Array(tariffs).map { |t| [t.name.to_s, t] }.to_h
     @router = router
   end
 
   def estimate(params)
-    origin = Model::MapPoint.new(*params['origin'].split(','))
-    destination = Model::MapPoint.new(*params['destination'].split(','))
-    route = @router.call(origin, destination)
+    origin, destination = Router::API.parse_params(params)
+    routes = @router.call(origin, destination)
     tariff = @tariffs.fetch(params['tariff'] || 'business')
     fare = Model::CalculateFare.call(tariff, route)
     {
-      routes: [
-        {
-          map_points: [origin.to_h, destination.to_h],
-          distance: route.distance,
-          duration: route.duration,
-          fare: Model.format_money(fare)
-        }
-      ],
+      routes: routes.map do |r|
+        r.to_h.merge(fare: Model.format_money(Model::CalculateFare.call(tariff, r)))
+      end,
       tariff: tariff.name,
       currency: Model::Currency.to_s
     }

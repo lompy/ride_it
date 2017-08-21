@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class ApiTest < Minitest::Test
+class APITest < Minitest::Test
   class DummyRouter
     def call(origin, destination)
       Model::Route.new([origin, destination], distance: 20, duration: 40)
@@ -15,7 +15,7 @@ class ApiTest < Minitest::Test
       per_km: 38_00,
       min_fare: 300_00
     )
-    @api = Api.new(@tariff, DummyRouter.new)
+    @api = API.new(@tariff, DummyRouter.new)
   end
 
   def test_estimate
